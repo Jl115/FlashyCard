@@ -1,10 +1,8 @@
 package UI;
 
-import UI.MainWindowComponents.CardPanel;
 import UI.MainWindowComponents.FooterMainWindow;
 import UI.MainWindowComponents.HeaderMainWindow;
 import UI.MainWindowComponents.MainContent;
-import UI.MenuComponents.SideMenu;
 import UI.MenuComponents.SideMenuOptions;
 import UI.MenuComponents.DeckSelectionListener;
 
@@ -21,6 +19,8 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
     private SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
     private MainContent mainContent = MainContent.getInstance();
     private SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
+    private AddCardPanel addCardPanel = AddCardPanel.getInstance();
+
 
 
 
@@ -31,7 +31,9 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
         this.setSize(200, 200);
 
         sideMenuOptions.addDeckSelectionListener(this);
-        deckSelected();
+        //deckSelected();
+
+        this.add(addCardPanel);
     }
 
     public static MainWindow getInstance() {
