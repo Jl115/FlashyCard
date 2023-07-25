@@ -8,6 +8,15 @@ import java.awt.event.ActionListener;
 public class AddCardPanel extends JPanel implements ActionListener {
 
     private static AddCardPanel instance;
+    private String frontText = "";
+    private  String cardTitle;
+    private String rightAnswer;
+    private JTextArea cardFrontTextArea = new JTextArea();
+    private JTextField titleTextField = new JTextField();
+
+    private JButton addButton = new JButton();
+    private JTextField rightAnswerField = new JTextField();
+
 
     public static AddCardPanel getInstance() {
         if (instance == null) {
@@ -37,7 +46,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         headerTitleLabel.setHorizontalAlignment(JLabel.CENTER);
         headerTitleLabel.setText("Enter the Card-name");
 
-        JTextField titleTextField = new JTextField();
+
 
         // Create constraints for components
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -67,7 +76,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 3;
         headerPanel.add(cardFrontLabel, gridBagConstraints);
 
-        JTextArea cardFrontTextArea = new JTextArea();
+
         cardFrontTextArea.setRows(5);
         cardFrontTextArea.setColumns(20);
         cardFrontTextArea.setLineWrap(true);
@@ -83,7 +92,6 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 5;
         headerPanel.add(cardBackLabel, gridBagConstraints);
 
-        JTextField rightAnswerField = new JTextField();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         headerPanel.add(rightAnswerField, gridBagConstraints);
@@ -116,9 +124,10 @@ public class AddCardPanel extends JPanel implements ActionListener {
 
 
 
-        JButton addButton = new JButton();
+
         addButton.setText("Add Card");
         addButton.setSize(100, 40);
+        addButton.addActionListener(this);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 11;
         headerPanel.add(addButton, gridBagConstraints);
@@ -129,6 +138,14 @@ public class AddCardPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton ) {
+           cardTitle = titleTextField.getText();
+           frontText = cardFrontTextArea.getText();
+           rightAnswer = rightAnswerField.getText();
 
+           System.out.println(cardTitle);
+           System.out.println(frontText);
+           System.out.println(rightAnswer);
+        }
     }
 }
