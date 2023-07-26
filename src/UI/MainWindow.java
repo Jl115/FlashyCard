@@ -31,9 +31,9 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
         this.setSize(200, 200);
 
         sideMenuOptions.addDeckSelectionListener(this);
-        //deckSelected();
+        deckSelected();
 
-        this.add(addCardPanel);
+
     }
 
     public static MainWindow getInstance() {
@@ -46,18 +46,25 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
     @Override
     public void deckSelected() {
         String playMode = sideMenuOptions.getSelectMode();
-        if (playMode.equals("Menu")) {
-            this.add(mainContent, BorderLayout.CENTER);
-            this.add(footerMainWindow, BorderLayout.PAGE_END);
-            this.add(headerMainWindow, BorderLayout.PAGE_START);
-            this.remove(selectDeckPanel);
-        } else if (playMode.equals("SelectDeck")){
-            this.add(selectDeckPanel, BorderLayout.CENTER);
-            this.remove(footerMainWindow);
-            this.remove(headerMainWindow);
-            this.remove(mainContent);
+            if (playMode.equals("Menu")) {
+                this.add(mainContent, BorderLayout.CENTER);
+                this.add(footerMainWindow, BorderLayout.PAGE_END);
+                this.add(headerMainWindow, BorderLayout.PAGE_START);
+                this.remove(selectDeckPanel);
+            } else if (playMode.equals("SelectDeck")) {
+                this.add(selectDeckPanel, BorderLayout.CENTER);
+                this.remove(footerMainWindow);
+                this.remove(headerMainWindow);
+                this.remove(mainContent);
+            } else if (playMode.equals("AddCard")) {
+                this.add(addCardPanel, BorderLayout.CENTER);
+                this.remove(selectDeckPanel);
+                this.remove(footerMainWindow);
+                this.remove(headerMainWindow);
+                this.remove(mainContent);
+            }
+            this.revalidate();
+            this.repaint();
         }
-        this.revalidate();
-        this.repaint();
-    }
+
 }

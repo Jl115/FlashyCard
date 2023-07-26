@@ -1,8 +1,8 @@
 package UI;
 
+import FolderController.FolderController;
 import UI.MenuComponents.DeckSelectionListener;
 import UI.MenuComponents.SideMenuOptions;
-import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 /**
  * This panel allows users to select, create, and delete "decks", represented as directories within a specified path.
  */
-public class SelectDeckPanel extends JPanel implements ActionListener {
+public class SelectDeckPanel extends JPanel implements ActionListener, FolderController {
     // Singleton instance of the SelectDeckPanel
     private static SelectDeckPanel instance;
 
@@ -111,6 +111,10 @@ public class SelectDeckPanel extends JPanel implements ActionListener {
         return instance;
     }
 
+    public String getFolderName() {
+        return folderName;
+    }
+
     public static String getSelectDeck() {
         return selectDeck;
     }
@@ -122,7 +126,8 @@ public class SelectDeckPanel extends JPanel implements ActionListener {
     /**
      * Creates a new deck directory with the name entered in the text field.
      */
-    private  void addFolder() {
+    @Override
+    public void addFolder() {
         this.folderName = this.folderTextField.getText();
         // Creating a new file with the name inside the text field
         File folder = new File(this.rootFile, folderName);
@@ -155,7 +160,9 @@ public class SelectDeckPanel extends JPanel implements ActionListener {
             addFolder();
         }else if (event.getSource() == selectButton ) {
             selectDeck = dataList.getSelectedValue();
-            setSelectDeck(selectDeck);
+            this.setSelectDeck(selectDeck);
+            AddCardPanel addCardPanel = AddCardPanel.getInstance();
+            addCardPanel.setFolderName(selectDeck);
             SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
             sideMenuOptions.setSelectMode("Menu");
             for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {  // assuming you have a getter for listeners

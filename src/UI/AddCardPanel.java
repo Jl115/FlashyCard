@@ -4,20 +4,47 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
+/**
+ * This class represents a panel for adding cards to a digital flashcard application.
+ * It follows the Singleton pattern to ensure only one instance of this panel exists.
+ * It also implements ActionListener to handle button press events.
+ */
 public class AddCardPanel extends JPanel implements ActionListener {
 
+    // Singleton instance of AddCardPanel.
     private static AddCardPanel instance;
+
+    // Variables holding user input for the flashcard front text, card title, and correct answer.
     private String frontText = "";
-    private  String cardTitle;
+    private String cardTitle;
     private String rightAnswer;
+
+    // Swing components used for user input.
     private JTextArea cardFrontTextArea = new JTextArea();
     private JTextField titleTextField = new JTextField();
-
     private JButton addButton = new JButton();
     private JTextField rightAnswerField = new JTextField();
+    private JTextField wrongAnswerFieldA = new JTextField();
+    private JTextField wrongAnswerFieldB = new JTextField();
 
+    // Variables related to file handling.
+    private String folderName;
+    private File rootFolder;
+    private File folder;
+    private File folderFrontName;
+    private File folderBackName;
 
+    // Instance of SelectDeckPanel.
+    private SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
+
+    /**
+     * Returns the Singleton instance of AddCardPanel, creating it if it doesn't exist.
+     * @return instance of AddCardPanel
+     */
     public static AddCardPanel getInstance() {
         if (instance == null) {
             instance = new AddCardPanel();
@@ -25,49 +52,58 @@ public class AddCardPanel extends JPanel implements ActionListener {
         return instance;
     }
 
+    /**
+     * Private constructor following the Singleton design pattern.
+     * Initializes file handling and Swing components, and configures the layout.
+     */
     private AddCardPanel() {
+        // Initialize the folder variables.
+        folderName = selectDeckPanel.getFolderName();
+        rootFolder = new File("./database/" + folderName);
+
+        // Set layout manager.
         this.setLayout(new BorderLayout());
 
+        // Create and configure headerPanel.
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new GridBagLayout());
         headerPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
+        // Create and configure contentPanel.
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridBagLayout());
 
+        // Configure GridBagConstraints.
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1.0;
         c.weighty = 1.0;
 
+        // Set up headerTitleLabel.
         JLabel headerTitleLabel = new JLabel();
         headerTitleLabel.setFont(getFont().deriveFont(Font.BOLD, 12));
         headerTitleLabel.setHorizontalAlignment(JLabel.CENTER);
         headerTitleLabel.setText("Enter the Card-name");
 
-
-
-        // Create constraints for components
+        // Configure GridBagConstraints for the grid items.
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-
-        // Specify that components should fill the space both horizontally
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-
-        // Add padding around components
         gridBagConstraints.insets = new Insets(10, 0, 10, 0);
 
-        gridBagConstraints.gridx = 0; // Specify the column in grid for button
-        gridBagConstraints.gridy = 0; // Specify the row in grid for button
-        gridBagConstraints.gridheight = 1; // Specify the height in grid terms
-        gridBagConstraints.gridwidth = 1; // Specify the width in grid terms
-
+        // Add headerTitleLabel to headerPanel.
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 1;
+        gridBagConstraints.gridwidth = 1;
         headerPanel.add(headerTitleLabel, gridBagConstraints);
 
+        // Add titleTextField to headerPanel.
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         headerPanel.add(titleTextField, gridBagConstraints);
 
+        // Set up and add cardFrontLabel to headerPanel.
         JLabel cardFrontLabel = new JLabel();
         cardFrontLabel.setFont(getFont().deriveFont(Font.BOLD, 12));
         cardFrontLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -76,7 +112,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 3;
         headerPanel.add(cardFrontLabel, gridBagConstraints);
 
-
+        // Configure and add cardFrontTextArea to headerPanel.
         cardFrontTextArea.setRows(5);
         cardFrontTextArea.setColumns(20);
         cardFrontTextArea.setLineWrap(true);
@@ -84,6 +120,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 4;
         headerPanel.add(cardFrontTextArea, gridBagConstraints);
 
+        // Set up and add cardBackLabel to headerPanel.
         JLabel cardBackLabel = new JLabel();
         cardBackLabel.setFont(getFont().deriveFont(Font.BOLD, 12));
         cardBackLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -92,10 +129,12 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 5;
         headerPanel.add(cardBackLabel, gridBagConstraints);
 
+        // Add rightAnswerField to headerPanel.
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
         headerPanel.add(rightAnswerField, gridBagConstraints);
 
+        // Set up and add cardBackWrongLabelA to headerPanel.
         JLabel cardBackWrongLabelA = new JLabel();
         cardBackWrongLabelA.setFont(getFont().deriveFont(Font.BOLD, 12));
         cardBackWrongLabelA.setHorizontalAlignment(JLabel.CENTER);
@@ -104,11 +143,12 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 7;
         headerPanel.add(cardBackWrongLabelA, gridBagConstraints);
 
-        JTextField wrongAnswerFieldA = new JTextField();
+        // Add wrongAnswerFieldA to headerPanel.
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
         headerPanel.add(wrongAnswerFieldA, gridBagConstraints);
 
+        // Set up and add cardBackWrongLabelB to headerPanel.
         JLabel cardBackWrongLabelB = new JLabel();
         cardBackWrongLabelB.setFont(getFont().deriveFont(Font.BOLD, 12));
         cardBackWrongLabelB.setHorizontalAlignment(JLabel.CENTER);
@@ -117,14 +157,12 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 9;
         headerPanel.add(cardBackWrongLabelB, gridBagConstraints);
 
-        JTextField wrongAnswerFielB = new JTextField();
+        // Add wrongAnswerFieldB to headerPanel.
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
-        headerPanel.add(wrongAnswerFielB, gridBagConstraints);
+        headerPanel.add(wrongAnswerFieldB, gridBagConstraints);
 
-
-
-
+        // Configure and add addButton to headerPanel.
         addButton.setText("Add Card");
         addButton.setSize(100, 40);
         addButton.addActionListener(this);
@@ -132,20 +170,112 @@ public class AddCardPanel extends JPanel implements ActionListener {
         gridBagConstraints.gridy = 11;
         headerPanel.add(addButton, gridBagConstraints);
 
-        contentPanel.add(headerPanel, c);  // add headerPanel to contentPanel
+        // Add headerPanel to contentPanel.
+        contentPanel.add(headerPanel, c);
+
+        // Add contentPanel to this panel.
         this.add(contentPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * This method is triggered when an action event occurs. Specifically, it handles events from the addButton.
+     * It retrieves the text inputs from various text fields and text areas,
+     * and calls the addCardToDeck() method to add the new card to the deck.
+     *
+     * @param e The action event that triggered this method.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton ) {
-           cardTitle = titleTextField.getText();
-           frontText = cardFrontTextArea.getText();
-           rightAnswer = rightAnswerField.getText();
+        // Check if the source of the action event is the addButton
+        if (e.getSource() == addButton) {
+            // Get the card's title from the titleTextField
+            cardTitle = titleTextField.getText();
+            // Get the front text of the card from the cardFrontTextArea
+            frontText = cardFrontTextArea.getText();
+            // Get the correct answer from the rightAnswerField
+            rightAnswer = rightAnswerField.getText();
+            // Get the first incorrect answer from wrongAnswerFieldA
+            String wrongAnswerA = wrongAnswerFieldA.getText();
+            // Get the second incorrect answer from wrongAnswerFieldB
+            String wrongAnswerB = wrongAnswerFieldB.getText();
 
-           System.out.println(cardTitle);
-           System.out.println(frontText);
-           System.out.println(rightAnswer);
+            try {
+                // Try to add the card to the deck
+                addCardToDeck(frontText, rightAnswer, wrongAnswerA, wrongAnswerB);
+            } catch (IOException ex) {
+                // If an IOException occurs, throw a new RuntimeException
+                throw new RuntimeException(ex);
+            }
         }
+    }
+
+    /**
+     * This method is used to add a card to the deck.
+     * It creates necessary directories and files, and writes the card data to the files.
+     *
+     * @param frontText    The text for the front of the card.
+     * @param rightAnswer  The correct answer for the card.
+     * @param wrongAnswerA The first incorrect answer for the card.
+     * @param wrongAnswerB The second incorrect answer for the card.
+     * @throws IOException If an I/O error occurs.
+     */
+    private void addCardToDeck(String frontText, String rightAnswer, String wrongAnswerA, String wrongAnswerB) throws IOException {
+        // Initialize the File objects for the directories and files.
+        folder = new File(rootFolder, cardTitle);
+        folderFrontName = new File(folder, "front");
+        folderBackName = new File(folder, "back");
+        File backRightTextFile = new File(folderBackName, "right.txt");
+        File backWrong1TextFile = new File(folderBackName, "wrong1.txt");
+        File backWrong2TextFile = new File(folderBackName, "wrong2.txt");
+        File frontTextFile = new File(folderFrontName, "front.txt");
+
+        // Create the directories and files, and write the card data to the files.
+        if (folder.mkdir()) {
+            if (folderFrontName.mkdirs()) {
+                try {
+                    if (frontTextFile.createNewFile()) {
+                        FileWriter fileWriter = new FileWriter(frontTextFile.getAbsoluteFile());
+                        fileWriter.write(frontText);
+                        fileWriter.close();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (folderBackName.mkdirs()) {
+                try {
+                    if (backRightTextFile.createNewFile()){
+                        FileWriter fileWriter = new FileWriter(backRightTextFile.getAbsoluteFile());
+                        fileWriter.write(rightAnswer);
+                        fileWriter.close();
+                    }
+                    if (backWrong1TextFile.createNewFile()) {
+                        FileWriter fileWriter = new FileWriter(backWrong1TextFile.getAbsoluteFile());
+                        fileWriter.write(wrongAnswerA);
+                        fileWriter.close();
+                    }
+                    if (backWrong2TextFile.createNewFile()) {
+                        FileWriter fileWriter = new FileWriter(backWrong2TextFile.getAbsoluteFile());
+                        fileWriter.write(wrongAnswerB);
+                        fileWriter.close();
+                    }
+                }catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "The Card Deck could not be created or a Card Deck with this Name already exists.");
+        }
+    }
+
+    /**
+     * This method is used to set the folder name for the deck.
+     * It also initializes the rootFolder based on the folder name.
+     *
+     * @param folderName The name of the folder.
+     */
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+        rootFolder = new File("./database/" + folderName);
     }
 }

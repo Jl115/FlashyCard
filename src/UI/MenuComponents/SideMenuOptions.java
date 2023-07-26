@@ -23,6 +23,8 @@ public class SideMenuOptions extends JPanel implements ActionListener {
     private JButton selectDeckButton = new JButton("Select Deck");
     private  JButton exitButton = new JButton("Exit FlashyCard");
 
+    private JButton addCardButton = new JButton("Add Card");
+
     // List to hold the listeners for deck selection
     private List<DeckSelectionListener> listeners = new ArrayList<>();
 
@@ -55,7 +57,7 @@ public class SideMenuOptions extends JPanel implements ActionListener {
         this.add(selectDeckButton, gridBagConstraints);
 
         // Create 'Add Card' button and add it to the panel
-        JButton addCardButton = new JButton("Add Card");
+
         addCardButton.addActionListener(this);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -91,6 +93,11 @@ public class SideMenuOptions extends JPanel implements ActionListener {
             setSelectMode("SelectDeck");
             // Notify all listeners that a deck has been selected
             for (DeckSelectionListener listener : listeners) {
+                listener.deckSelected();
+            }
+        }else if (event.getSource() == this.addCardButton) {
+            setSelectMode("AddCard");
+            for (DeckSelectionListener listener : listeners){
                 listener.deckSelected();
             }
         }else if(event.getSource() == this.exitButton) {
