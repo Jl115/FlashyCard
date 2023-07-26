@@ -183,6 +183,14 @@ public class AddCardPanel extends JPanel implements ActionListener {
         if (e.getSource() == addButton) {
             // Get the card's title from the titleTextField
             cardTitle = titleTextField.getText();
+            //Replacing whitespace with _
+            cardTitle = cardTitle.replace(" ", "_");
+            cardTitle = cardTitle.replace("ä", "ae");
+            cardTitle = cardTitle.replace("ö", "oe");
+            cardTitle = cardTitle.replace("ü", "ue");
+            cardTitle = cardTitle.replace("Ä", "Ae");
+            cardTitle = cardTitle.replace("Ö", "Oe");
+            cardTitle = cardTitle.replace("Ü", "Ue");
             // Get the front text of the card from the cardFrontTextArea
             // Variables holding user input for the flashcard front text, card title, and correct answer.
             String frontText = cardFrontTextArea.getText();
