@@ -183,7 +183,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         if (e.getSource() == addButton) {
             // Get the card's title from the titleTextField
             cardTitle = titleTextField.getText();
-            //Replacing whitespace with _
+            //Replacing whitespace with _ and äöü/ÖÄÜ
             cardTitle = cardTitle.replace(" ", "_");
             cardTitle = cardTitle.replace("ä", "ae");
             cardTitle = cardTitle.replace("ö", "oe");
