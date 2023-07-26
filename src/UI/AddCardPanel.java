@@ -18,28 +18,19 @@ public class AddCardPanel extends JPanel implements ActionListener {
     // Singleton instance of AddCardPanel.
     private static AddCardPanel instance;
 
-    // Variables holding user input for the flashcard front text, card title, and correct answer.
-    private String frontText = "";
     private String cardTitle;
-    private String rightAnswer;
 
     // Swing components used for user input.
-    private JTextArea cardFrontTextArea = new JTextArea();
-    private JTextField titleTextField = new JTextField();
-    private JButton addButton = new JButton();
-    private JTextField rightAnswerField = new JTextField();
-    private JTextField wrongAnswerFieldA = new JTextField();
-    private JTextField wrongAnswerFieldB = new JTextField();
+    private final JTextArea cardFrontTextArea = new JTextArea();
+    private final JTextField titleTextField = new JTextField();
+    private final JButton addButton = new JButton();
+    private final JTextField rightAnswerField = new JTextField();
+    private final JTextField wrongAnswerFieldA = new JTextField();
+    private final JTextField wrongAnswerFieldB = new JTextField();
 
     // Variables related to file handling.
     private String folderName;
     private File rootFolder;
-    private File folder;
-    private File folderFrontName;
-    private File folderBackName;
-
-    // Instance of SelectDeckPanel.
-    private SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
 
     /**
      * Returns the Singleton instance of AddCardPanel, creating it if it doesn't exist.
@@ -58,6 +49,8 @@ public class AddCardPanel extends JPanel implements ActionListener {
      */
     private AddCardPanel() {
         // Initialize the folder variables.
+        // Instance of SelectDeckPanel.
+        SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
         folderName = selectDeckPanel.getFolderName();
         rootFolder = new File("./database/" + folderName);
 
@@ -191,9 +184,10 @@ public class AddCardPanel extends JPanel implements ActionListener {
             // Get the card's title from the titleTextField
             cardTitle = titleTextField.getText();
             // Get the front text of the card from the cardFrontTextArea
-            frontText = cardFrontTextArea.getText();
+            // Variables holding user input for the flashcard front text, card title, and correct answer.
+            String frontText = cardFrontTextArea.getText();
             // Get the correct answer from the rightAnswerField
-            rightAnswer = rightAnswerField.getText();
+            String rightAnswer = rightAnswerField.getText();
             // Get the first incorrect answer from wrongAnswerFieldA
             String wrongAnswerA = wrongAnswerFieldA.getText();
             // Get the second incorrect answer from wrongAnswerFieldB
@@ -221,9 +215,9 @@ public class AddCardPanel extends JPanel implements ActionListener {
      */
     private void addCardToDeck(String frontText, String rightAnswer, String wrongAnswerA, String wrongAnswerB) throws IOException {
         // Initialize the File objects for the directories and files.
-        folder = new File(rootFolder, cardTitle);
-        folderFrontName = new File(folder, "front");
-        folderBackName = new File(folder, "back");
+        File folder = new File(rootFolder, cardTitle);
+        File folderFrontName = new File(folder, "front");
+        File folderBackName = new File(folder, "back");
         File backRightTextFile = new File(folderBackName, "right.txt");
         File backWrong1TextFile = new File(folderBackName, "wrong1.txt");
         File backWrong2TextFile = new File(folderBackName, "wrong2.txt");
