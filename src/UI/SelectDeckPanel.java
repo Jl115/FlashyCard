@@ -1,6 +1,8 @@
 package UI;
 
 import FolderController.FolderController;
+import UI.MainWindowComponents.CardContent;
+import UI.MainWindowComponents.HeaderMainWindow;
 import UI.MenuComponents.DeckSelectionListener;
 import UI.MenuComponents.SideMenuOptions;
 
@@ -30,7 +32,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     private JButton selectButton = new JButton();
 
     // Accessing relative path of the folder for the decks
-    private File rootFile = new File("./database");
+    private File rootFile = new File("./flashyCard_DB");
     private DefaultListModel<String> dataModel = new DefaultListModel<>();
 
     private JList<String> dataList = new JList<>(this.dataModel);
@@ -40,6 +42,9 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
      */
     private SelectDeckPanel() {
         this.setLayout(new BorderLayout());
+
+        //Checking if the root folder exist when not it will be created
+        checkAndCreateDirectory(rootFile);
 
         // Populate the list model with existing decks
         fillDataModel(dataModel, rootFile);
@@ -123,6 +128,15 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
         this.selectDeck = selectDeck;
     }
 
+    private void checkAndCreateDirectory(File directory) {
+        if (!directory.exists()) {
+            if (!directory.mkdir()) {
+                System.out.println("Could not create directory: " + directory.getAbsolutePath());
+                System.exit(1);
+            }
+        }
+    }
+
     /**
      * Creates a new deck directory with the name entered in the text field.
      */
@@ -154,6 +168,21 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
         }
     }
 
+    /**
+     * Deletes a directory and all its contents.
+     * @param directoryToBeDeleted the directory to delete
+     * @return true if the directory was successfully deleted, false otherwise
+     */
+    private boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == folderAddButton || event.getSource() == folderTextField) {
@@ -163,18 +192,24 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             this.setSelectDeck(selectDeck);
             AddCardPanel addCardPanel = AddCardPanel.getInstance();
             addCardPanel.setFolderName(selectDeck);
+            CardContent cardContent = CardContent.getInstance();
+            cardContent.setDeckName(selectDeck);
+            HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
+            headerMainWindow.setDeckName(selectDeck);
             SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
             sideMenuOptions.setSelectMode("Menu");
             for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {  // assuming you have a getter for listeners
                 listener.deckSelected();
             }
+
+
         }else if (event.getSource() == deleteFolderButton ) {
             String selectedName = dataList.getSelectedValue();
             if (selectedName != null) {
                 File file = new File(rootFile, selectedName);
-                if (file.delete()) {
+                if (deleteDirectory(file)) {
                     dataModel.removeElement(selectedName);
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(this, "The Card deck could not be deleted.");
                 }
             }

@@ -52,7 +52,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         // Instance of SelectDeckPanel.
         SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
         folderName = selectDeckPanel.getFolderName();
-        rootFolder = new File("./database/" + folderName);
+        rootFolder = new File("./flashyCard_DB/" + folderName);
 
         // Set layout manager.
         this.setLayout(new BorderLayout());
@@ -107,7 +107,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
 
         // Configure and add cardFrontTextArea to headerPanel.
         cardFrontTextArea.setRows(5);
-        cardFrontTextArea.setColumns(20);
+        cardFrontTextArea.setColumns(30);
         cardFrontTextArea.setLineWrap(true);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -157,7 +157,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
 
         // Configure and add addButton to headerPanel.
         addButton.setText("Add Card");
-        addButton.setSize(100, 40);
+        addButton.setSize(100, 50);
         addButton.addActionListener(this);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 11;
@@ -278,6 +278,6 @@ public class AddCardPanel extends JPanel implements ActionListener {
      */
     public void setFolderName(String folderName) {
         this.folderName = folderName;
-        rootFolder = new File("./database/" + folderName);
+        rootFolder = new File("./flashyCard_DB/" + folderName);
     }
 }

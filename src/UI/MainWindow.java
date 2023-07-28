@@ -3,6 +3,7 @@ package UI;
 import UI.MainWindowComponents.FooterMainWindow;
 import UI.MainWindowComponents.HeaderMainWindow;
 import UI.MainWindowComponents.MainContent;
+import UI.MenuComponents.MenuPanel;
 import UI.MenuComponents.SideMenuOptions;
 import UI.MenuComponents.DeckSelectionListener;
 
@@ -14,17 +15,15 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
 
 
 
-    private HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
-    private FooterMainWindow footerMainWindow = FooterMainWindow.getInstance();
-    private SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
-    private MainContent mainContent = MainContent.getInstance();
-    private SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
-    private AddCardPanel addCardPanel = AddCardPanel.getInstance();
+    private final HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
+    private final FooterMainWindow footerMainWindow = FooterMainWindow.getInstance();
+    private final SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
+    private final MainContent mainContent = MainContent.getInstance();
+    private final SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
+    private final AddCardPanel addCardPanel = AddCardPanel.getInstance();
 
+    private final MenuPanel menuPanel = MenuPanel.getInstance();
 
-
-
-    private String setMode = "Menu";
 
     private MainWindow() {
         this.setLayout(new BorderLayout());
@@ -46,23 +45,40 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
     @Override
     public void deckSelected() {
         String playMode = sideMenuOptions.getSelectMode();
-            if (playMode.equals("Menu")) {
+        switch (playMode) {
+            case "Play" -> {
                 this.add(mainContent, BorderLayout.CENTER);
                 this.add(footerMainWindow, BorderLayout.PAGE_END);
                 this.add(headerMainWindow, BorderLayout.PAGE_START);
                 this.remove(selectDeckPanel);
-            } else if (playMode.equals("SelectDeck")) {
+                this.remove(addCardPanel);
+                this.remove(menuPanel);
+            }
+            case "SelectDeck" -> {
                 this.add(selectDeckPanel, BorderLayout.CENTER);
                 this.remove(footerMainWindow);
                 this.remove(headerMainWindow);
                 this.remove(mainContent);
-            } else if (playMode.equals("AddCard")) {
+                this.remove(menuPanel);
+                this.remove(addCardPanel);
+            }
+            case "AddCard" -> {
                 this.add(addCardPanel, BorderLayout.CENTER);
                 this.remove(selectDeckPanel);
                 this.remove(footerMainWindow);
                 this.remove(headerMainWindow);
                 this.remove(mainContent);
+                this.remove(menuPanel);
             }
+            case "Menu" -> {
+                this.add(menuPanel, BorderLayout.CENTER);
+                this.remove(selectDeckPanel);
+                this.remove(footerMainWindow);
+                this.remove(headerMainWindow);
+                this.remove(mainContent);
+                this.remove(addCardPanel);
+            }
+        }
             this.revalidate();
             this.repaint();
         }
