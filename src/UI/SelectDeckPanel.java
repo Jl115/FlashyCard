@@ -1,5 +1,4 @@
 package UI;
-
 import FolderController.FolderController;
 import UI.MainWindowComponents.CardContent;
 import UI.MainWindowComponents.HeaderMainWindow;
@@ -28,32 +27,28 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     private JTextField folderTextField = new JTextField();
     private JButton folderAddButton = new JButton();
     private JButton deleteFolderButton = new JButton();
-
     private JButton selectButton = new JButton();
 
     // Accessing relative path of the folder for the decks
     private File rootFile = new File("./flashyCard_DB");
     private DefaultListModel<String> dataModel = new DefaultListModel<>();
-
     private JList<String> dataList = new JList<>(this.dataModel);
 
     /**
      * Private constructor for Singleton pattern.
+     * Sets up the panel layout and functionality.
      */
     private SelectDeckPanel() {
         this.setLayout(new BorderLayout());
 
-        //Checking if the root folder exist when not it will be created
+        // Check if the root directory exists, if not create it
         checkAndCreateDirectory(rootFile);
 
-        // Populate the list model with existing decks
+        // Populate the list model with existing deck names
         fillDataModel(dataModel, rootFile);
 
-        // Create a list for displaying deck names
-
+        // Setting up list properties
         dataList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-
-        // Custom rendering for the list cells
         dataList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -65,26 +60,25 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             }
         });
 
-        // Add a scroll pane to the panel for the list
+        // Adding list with a scroll pane to the panel
         this.add(new JScrollPane(dataList), BorderLayout.CENTER);
 
-        // Set the action for the text field (used for folder name input)
+        // Add an action to the text field to create a new deck
         this.folderTextField.addActionListener(e -> addFolder());
 
-
-
+        // Setting up the create deck button
         folderAddButton.setText("Create Deck");
         folderAddButton.addActionListener(this);
 
-        // Creates a Button for deleting an existing deck
-
+        // Setting up the delete deck button
         deleteFolderButton.setText("Delete Deck");
         deleteFolderButton.addActionListener(this);
 
+        // Setting up the select deck button
         selectButton.setText("Select Deck");
         selectButton.addActionListener(this);
 
-        // Footer panel for folder text field and buttons
+        // Create and add footer panel with text field and buttons
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(new BorderLayout());
         footerPanel.add(this.folderTextField, BorderLayout.CENTER);
@@ -99,14 +93,14 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
 
         this.add(footerPanel, BorderLayout.PAGE_END);
 
-        // Check if the list of decks is empty
+        // Display message if no decks exist
         if (dataModel.isEmpty()) {
             JOptionPane.showMessageDialog(this, "U need to create a Card deck.");
         }
     }
 
     /**
-     * Returns the instance of SelectDeckPanel.
+     * Singleton pattern instance accessor.
      * @return the SelectDeckPanel instance
      */
     public static SelectDeckPanel getInstance() {
@@ -128,6 +122,10 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
         this.selectDeck = selectDeck;
     }
 
+    /**
+     * Checks if the specified directory exists, and creates it if it doesn't.
+     * @param directory The directory to check/create.
+     */
     private void checkAndCreateDirectory(File directory) {
         if (!directory.exists()) {
             if (!directory.mkdir()) {
@@ -154,7 +152,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     }
 
     /**
-     * Fills the list model with the names of existing deck directories Alphabetic sorted.
+     * Populates the list model with the names of existing deck directories.
      * @param dataModel the DefaultListModel to populate
      * @param rootFile the directory to scan for deck directories
      */
@@ -169,7 +167,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     }
 
     /**
-     * Deletes a directory and all its contents.
+     * Recursively deletes a directory and all its contents.
      * @param directoryToBeDeleted the directory to delete
      * @return true if the directory was successfully deleted, false otherwise
      */
@@ -183,11 +181,17 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
         return directoryToBeDeleted.delete();
     }
 
+    /**
+     * Handles button click events.
+     * @param event The action event.
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == folderAddButton || event.getSource() == folderTextField) {
+            // If the user clicks the add folder button or presses enter in the text field, create a new deck
             addFolder();
-        }else if (event.getSource() == selectButton ) {
+        } else if (event.getSource() == selectButton) {
+            // If the user clicks the select deck button, update the selected deck in various components
             selectDeck = dataList.getSelectedValue();
             this.setSelectDeck(selectDeck);
             AddCardPanel addCardPanel = AddCardPanel.getInstance();
@@ -201,9 +205,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {  // assuming you have a getter for listeners
                 listener.deckSelected();
             }
-
-
-        }else if (event.getSource() == deleteFolderButton ) {
+        } else if (event.getSource() == deleteFolderButton) {
             String selectedName = dataList.getSelectedValue();
             if (selectedName != null) {
                 File file = new File(rootFile, selectedName);
