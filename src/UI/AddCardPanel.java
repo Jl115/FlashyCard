@@ -1,5 +1,7 @@
 package UI;
 
+import UI.MainWindowComponents.CardContent;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -233,6 +235,8 @@ public class AddCardPanel extends JPanel implements ActionListener {
 
         // Create the directories and files, and write the card data to the files.
         if (folder.mkdir()) {
+            CardContent cardContent = CardContent.getInstance();
+            cardContent.setDeckName(cardTitle);
             if (folderFrontName.mkdirs()) {
                 try {
                     if (frontTextFile.createNewFile()) {
@@ -280,4 +284,6 @@ public class AddCardPanel extends JPanel implements ActionListener {
         this.folderName = folderName;
         rootFolder = new File("./flashyCard_DB/" + folderName);
     }
+
+
 }

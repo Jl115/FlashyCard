@@ -1,5 +1,8 @@
 package UI.MenuComponents;
 
+import FolderController.FileController;
+import FolderController.SetDeckName;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,16 +10,21 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Class that creates a side menu panel with options for the application.
  * Implements ActionListener to handle action events on its components.
+ *
  */
-public class SideMenuOptions extends JPanel implements ActionListener {
+
+
+public class SideMenuOptions extends JPanel implements ActionListener, SetDeckName {
     // Singleton instance of SideMenuOptions
     private static SideMenuOptions instance;
 
     // Mode indicating current selected option in the menu
     private String selectMode = "Menu";
+    private String deckName;
 
     // Select Deck button
     private final JButton selectDeckButton = new JButton("Select Deck");
@@ -25,6 +33,7 @@ public class SideMenuOptions extends JPanel implements ActionListener {
     private final JButton addCardButton = new JButton("Add Card");
 
     private final JButton playButton = new JButton("Play");
+
 
     // List to hold the listeners for deck selection
     private final List<DeckSelectionListener> listeners = new ArrayList<>();
@@ -111,6 +120,7 @@ public class SideMenuOptions extends JPanel implements ActionListener {
             }
         }else if (event.getSource() == this.playButton) {
             setSelectMode("Play");
+            FileController.getInstance(deckName);
             for (DeckSelectionListener listener : listeners){
                 listener.deckSelected();
             }
@@ -151,5 +161,10 @@ public class SideMenuOptions extends JPanel implements ActionListener {
         this.selectMode = selectMode;
     }
 
+    @Override
+    public void setDeckName(String folderName) {
+        deckName = folderName;
+        this.revalidate();
 
+    }
 }

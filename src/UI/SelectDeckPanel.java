@@ -1,5 +1,5 @@
 package UI;
-import FolderController.FolderController;
+import FolderController.*;
 import UI.MainWindowComponents.CardContent;
 import UI.MainWindowComponents.HeaderMainWindow;
 import UI.MenuComponents.DeckSelectionListener;
@@ -21,7 +21,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
 
     // Name of the folder to be created or deleted
     protected String folderName;
-    private static String selectDeck;
+    public static String selectDeck;
 
     // Text field for the user to input the name of the deck
     private JTextField folderTextField = new JTextField();
@@ -33,6 +33,8 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     private File rootFile = new File("./flashyCard_DB");
     private DefaultListModel<String> dataModel = new DefaultListModel<>();
     private JList<String> dataList = new JList<>(this.dataModel);
+
+    private String cardTitle;
 
     /**
      * Private constructor for Singleton pattern.
@@ -197,11 +199,13 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             AddCardPanel addCardPanel = AddCardPanel.getInstance();
             addCardPanel.setFolderName(selectDeck);
             CardContent cardContent = CardContent.getInstance();
-            cardContent.setDeckName(selectDeck);
+            cardContent.setDeckName(cardTitle);
             HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
             headerMainWindow.setDeckName(selectDeck);
+
             SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
             sideMenuOptions.setSelectMode("Menu");
+            sideMenuOptions.setDeckName(selectDeck);
             for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {  // assuming you have a getter for listeners
                 listener.deckSelected();
             }
@@ -217,4 +221,6 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             }
         }
     }
+
+
 }
