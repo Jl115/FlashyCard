@@ -199,7 +199,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
             AddCardPanel addCardPanel = AddCardPanel.getInstance();
             addCardPanel.setFolderName(selectDeck);
             CardContent cardContent = CardContent.getInstance();
-            cardContent.setDeckName(cardTitle);
+            cardContent.setDeckName(selectDeck); // Verwende selectDeck statt cardTitle
             HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
             headerMainWindow.setDeckName(selectDeck);
 

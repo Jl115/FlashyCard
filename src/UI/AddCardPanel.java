@@ -227,10 +227,9 @@ public class AddCardPanel extends JPanel implements ActionListener {
         // Initialize the File objects for the directories and files.
         File folder = new File(rootFolder, cardTitle);
         File folderFrontName = new File(folder, "front");
-        File folderBackName = new File(folder, "back");
-        File backRightTextFile = new File(folderBackName, "right.txt");
-        File backWrong1TextFile = new File(folderBackName, "wrong1.txt");
-        File backWrong2TextFile = new File(folderBackName, "wrong2.txt");
+        File backRightTextFile = new File(folderFrontName, "right.txt");
+        File backWrong1TextFile = new File(folderFrontName, "wrong1.txt");
+        File backWrong2TextFile = new File(folderFrontName, "wrong2.txt");
         File frontTextFile = new File(folderFrontName, "front.txt");
 
         // Create the directories and files, and write the card data to the files.
@@ -244,12 +243,6 @@ public class AddCardPanel extends JPanel implements ActionListener {
                         fileWriter.write(frontText);
                         fileWriter.close();
                     }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            if (folderBackName.mkdirs()) {
-                try {
                     if (backRightTextFile.createNewFile()){
                         FileWriter fileWriter = new FileWriter(backRightTextFile.getAbsoluteFile());
                         fileWriter.write(rightAnswer);
@@ -265,7 +258,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
                         fileWriter.write(wrongAnswerB);
                         fileWriter.close();
                     }
-                }catch (IOException ex) {
+                } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
