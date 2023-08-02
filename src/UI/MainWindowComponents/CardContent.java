@@ -7,48 +7,83 @@ import UI.SelectDeckPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
+import static FolderController.CardFolderReader.addFolderStructure;
 
 public class CardContent extends JPanel implements SetDeckName {
     private static CardContent instance;
     private String deckName;
     private File folder;
-    private JLabel title;
+
     private JLabel nameLabel;
-    private JLabel frontLabel;
+    private JTextArea frontTextArea;
     private JLabel rightLabel;
     private JLabel wrong1Label;
     private JLabel wrong2Label;
+    private JPanel namePanel;
+    private JPanel frontCardPanel;
+    private JLabel frontCardLabel;
     private Card[] cards;
     private int currentIndex = 1;
 
     private CardContent() {
-        title = new JLabel();
         SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
         deckName = selectDeckPanel.getSelectDeck();
         setDeckName(deckName);
 
-        title.setFont(title.getFont().deriveFont(Font.ITALIC, 16));
-        title.setHorizontalAlignment(JLabel.CENTER);
         this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         this.setLayout(new BorderLayout());
-        this.add(title, BorderLayout.PAGE_START);
 
         JPanel cardPanel = new JPanel();
-        cardPanel.setLayout(new GridLayout(5, 1));
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        cardPanel.setLayout(gridBagLayout);
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        namePanel = new JPanel();
+        namePanel.setLayout(new BorderLayout());
         nameLabel = new JLabel();
-        frontLabel = new JLabel();
+        namePanel.add(nameLabel, BorderLayout.PAGE_START);
+        nameLabel.setFont(nameLabel.getFont().deriveFont(Font.ITALIC, 16));
+        nameLabel.setHorizontalAlignment(JLabel.CENTER);
+        nameLabel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+
+        frontTextArea = new JTextArea();
+        frontTextArea.setEditable(false);
+        frontTextArea.setOpaque(false);
+        frontTextArea.setLineWrap(true);
+        frontTextArea.setWrapStyleWord(true);
+        frontCardPanel = new JPanel();
+        frontCardLabel = new JLabel();
+        frontCardPanel.setLayout(new BorderLayout());
+        frontCardPanel.add(frontCardLabel, BorderLayout.PAGE_START);
+        frontCardPanel.add(frontTextArea, BorderLayout.CENTER);
+
         rightLabel = new JLabel();
         wrong1Label = new JLabel();
         wrong2Label = new JLabel();
 
-        cardPanel.add(nameLabel);
-        cardPanel.add(frontLabel);
-        cardPanel.add(rightLabel);
-        cardPanel.add(wrong1Label);
-        cardPanel.add(wrong2Label);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        cardPanel.add(namePanel, constraints);
+
+        constraints.gridy = 1;
+        constraints.weighty = 2; // Doppelter Platz in der Höhe
+        constraints.fill = GridBagConstraints.BOTH;
+        cardPanel.add(frontCardPanel, constraints);
+
+        constraints.gridy = 2;
+        constraints.weighty = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        cardPanel.add(rightLabel, constraints);
+
+        constraints.gridy = 3;
+        cardPanel.add(wrong1Label, constraints);
+
+        constraints.gridy = 4;
+        cardPanel.add(wrong2Label, constraints);
 
         this.add(cardPanel, BorderLayout.CENTER);
 
@@ -74,7 +109,6 @@ public class CardContent extends JPanel implements SetDeckName {
 
         buttonPanel.add(previousButton);
         buttonPanel.add(nextButton);
-
         this.add(buttonPanel, BorderLayout.PAGE_END);
     }
 
@@ -87,100 +121,27 @@ public class CardContent extends JPanel implements SetDeckName {
 
     @Override
     public void setDeckName(String folderName) {
-        if (folderName == null || folderName.isEmpty()) {
-            System.out.println("Deck name is not set!"); // Debug-Ausgabe
-            title.setText("No Card Selected");
-            return; // Frühzeitiger Ausstieg, da der Deckname ungültig ist
-        }
         deckName = folderName;
-        if (deckName != null) {
-            title.setText(deckName);
-        } else title.setText("No Card Selected");
         folder = new File("./flashyCard_DB/" + folderName);
-        System.out.println("Reading deck from folder: " + folder); // Debug-Ausgabe
-        cards = traverseFolder(folder);
-        currentIndex = 0; // Reset the card index
+        cards = addFolderStructure(folder);
+        currentIndex = 0;
         showCard();
         this.revalidate();
         this.repaint();
     }
 
-
     private void showCard() {
         if (cards != null && currentIndex < cards.length) {
             Card card = cards[currentIndex];
             nameLabel.setText(card.getName());
-            frontLabel.setText(card.getFront());
+            frontTextArea.setText(card.getFront());
             rightLabel.setText(card.getRight());
             wrong1Label.setText(card.getWrong1());
             wrong2Label.setText(card.getWrong2());
+            frontCardLabel.setText("Question of the Card:");
+            frontCardLabel.setFont(frontCardLabel.getFont().deriveFont(Font.BOLD, 14));
+            frontCardLabel.setHorizontalAlignment(JLabel.LEFT);
+            frontCardPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         }
     }
-    public static Card[] traverseFolder(File currentFolder) {
-        List<Card> structure = new ArrayList<>();
-        if (currentFolder.isDirectory()) {
-            File[] cardFolders = currentFolder.listFiles(File::isDirectory);
-            if (cardFolders != null) {
-                for (File cardFolder : cardFolders) {
-                    System.out.println("Reading card folder: " + cardFolder.getPath()); // Debug
-                    String front = null, right = null, wrong1 = null, wrong2 = null;
-                    File frontFolder = new File(cardFolder, "front");
-                    if (frontFolder.isDirectory()) {
-                        File[] files = frontFolder.listFiles();
-                        if (files != null) {
-                            System.out.println("Reading files from folder: " + frontFolder.getPath()); // Debug
-                            for (File file : files) {
-                                String content = readFileToString(file.getPath());
-                                System.out.println("Reading file: " + file.getName() + ", content: " + content); // Debug
-                                switch (file.getName()) {
-                                    case "front.txt":
-                                        front = content;
-                                        break;
-                                    case "right.txt":
-                                        right = content;
-                                        break;
-                                    case "wrong1.txt":
-                                        wrong1 = content;
-                                        break;
-                                    case "wrong2.txt":
-                                        wrong2 = content;
-                                        break;
-                                }
-                            }
-                        } else {
-                            System.out.println("No files in folder: " + frontFolder.getPath()); // Debug
-                        }
-                    } else {
-                        System.out.println("Not a directory: " + frontFolder.getPath()); // Debug
-                    }
-                    structure.add(new Card(cardFolder.getName(), front, right, wrong1, wrong2));
-                }
-            } else {
-                System.out.println("No card folders in directory: " + currentFolder.getPath()); // Debug
-            }
-        } else {
-            System.out.println("Not a directory: " + currentFolder.getPath()); // Debug
-        }
-        return structure.toArray(new Card[0]);
-    }
-
-
-
-
-
-
-
-    private static String readFileToString(String path) {
-        StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                contentBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return contentBuilder.toString().trim();
-    }
-
 }
