@@ -43,7 +43,7 @@ public class SideMenu extends JPanel {
      *
      * @return The single instance of SideMenu
      */
-    public static SideMenu getInstace() {
+    public static SideMenu getInstance() {
         // If instance doesn't exist, create one
         if (instance == null){
             instance = new SideMenu();

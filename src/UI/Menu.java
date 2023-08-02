@@ -1,7 +1,6 @@
 package UI;
 
 import UI.MenuComponents.SideMenu;
-import com.sun.tools.javac.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,7 @@ public class Menu extends JFrame {
 
     //constructor
     private Menu() {
-        SideMenu sideMenu = SideMenu.getInstace();
+        SideMenu sideMenu = SideMenu.getInstance();
         MainWindow mainWindow = MainWindow.getInstance();
 
         //settings for JFrame window
