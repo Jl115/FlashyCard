@@ -7,14 +7,12 @@ public class CardPanel extends JPanel {
     private static CardPanel instance;
 
     private CardPanel() {
-        CardPanelFooter cardPanelFooter = CardPanelFooter.getInstance();
         CardContent cardContent = CardContent.getInstance();
         this.setSize(200,200);
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 
 
-        this.add(cardPanelFooter, BorderLayout.PAGE_END);
         this.add(cardContent, BorderLayout.CENTER);
 
     }

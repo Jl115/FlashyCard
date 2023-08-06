@@ -1,4 +1,4 @@
-package UI;
+package UI.Panels;
 
 import UI.MainWindowComponents.CardContent;
 

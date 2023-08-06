@@ -12,7 +12,7 @@ public class Menu extends JFrame {
     //constructor
     private Menu() {
         SideMenu sideMenu = SideMenu.getInstance();
-        MainWindow mainWindow = MainWindow.getInstance();
+        WindowManager windowManager = WindowManager.getInstance();
 
         //settings for JFrame window
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -23,7 +23,7 @@ public class Menu extends JFrame {
 
 
         this.add(sideMenu, BorderLayout.LINE_START);
-        this.add(mainWindow, BorderLayout.CENTER);
+        this.add(windowManager, BorderLayout.CENTER);
 
     }
 

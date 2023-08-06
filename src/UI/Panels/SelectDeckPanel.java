@@ -1,4 +1,4 @@
-package UI;
+package UI.Panels;
 import FolderController.*;
 import UI.MainWindowComponents.CardContent;
 import UI.MainWindowComponents.HeaderMainWindow;

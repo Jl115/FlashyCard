@@ -2,14 +2,14 @@ package UI.MainWindowComponents;
 
 import FolderController.Card;
 import FolderController.SetDeckName;
-import UI.CardComponents.CustomBorderTextArea;
-import UI.CardComponents.CustomTextArea;
-import UI.SelectDeckPanel;
+import UI.CustomComponents.CustomBorderTextArea;
+import UI.CustomComponents.CustomTextArea;
+import UI.Panels.SelectDeckPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.*;
+import java.util.Random;
 
 import static FolderController.CardFolderReader.addFolderStructure;
 
@@ -125,8 +125,9 @@ public class CardContent extends JPanel implements SetDeckName {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
-        JButton previousButton = new JButton("Previous");
-        JButton nextButton = new JButton("Next");
+        JButton previousButton = new JButton("←");
+        JButton shuffleButton = new JButton("Shuffle");
+        JButton nextButton = new JButton("→");
 
         previousButton.addActionListener(e -> {
             if (currentIndex > 0) {
@@ -142,7 +143,33 @@ public class CardContent extends JPanel implements SetDeckName {
             }
         });
 
+        shuffleButton.addActionListener(e -> {
+            //implementation of the FisherYates shuffle Algorithm
+            int numberOfCards = cards.length;
+            Random rnd = new Random();
+            int[] cardNumber = new int[numberOfCards];
+            for (int i = 0; i < numberOfCards; i++) {
+                cardNumber[i] = i;
+            }
+            for (int i = cardNumber.length - 1; i > 0; i--) {
+                int index = rnd.nextInt(i + 1);
+                // Simple swap
+                int a = cardNumber[index];
+                cardNumber[index] = cardNumber[i];
+                cardNumber[i] = a;
+            }
+
+            Card[] shuffledCard = new Card[numberOfCards];
+            for (int i = 0; i < numberOfCards; i++) {
+                shuffledCard[i] = cards[cardNumber[i]];
+            }
+            cards = shuffledCard;
+            showCard();
+            currentIndex = 0;
+        });
+
         buttonPanel.add(previousButton);
+        buttonPanel.add(shuffleButton);
         buttonPanel.add(nextButton);
         this.add(buttonPanel, BorderLayout.PAGE_END);
     }

@@ -1,22 +1,22 @@
 package UI;
 
-import UI.MainWindowComponents.FooterMainWindow;
 import UI.MainWindowComponents.HeaderMainWindow;
 import UI.MainWindowComponents.MainContent;
 import UI.MenuComponents.MenuPanel;
 import UI.MenuComponents.SideMenuOptions;
 import UI.MenuComponents.DeckSelectionListener;
+import UI.Panels.AddCardPanel;
+import UI.Panels.SelectDeckPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MainWindow extends JPanel implements DeckSelectionListener {
-    private static MainWindow instance;
+public class WindowManager extends JPanel implements DeckSelectionListener {
+    private static WindowManager instance;
 
 
 
     private final HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
-    private final FooterMainWindow footerMainWindow = FooterMainWindow.getInstance();
     private final SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
     private final MainContent mainContent = MainContent.getInstance();
     private final SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
@@ -25,7 +25,7 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
     private final MenuPanel menuPanel = MenuPanel.getInstance();
 
 
-    private MainWindow() {
+    private WindowManager() {
         this.setLayout(new BorderLayout());
         this.setSize(200, 200);
 
@@ -35,9 +35,9 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
 
     }
 
-    public static MainWindow getInstance() {
+    public static WindowManager getInstance() {
         if (instance == null) {
-            instance = new MainWindow();
+            instance = new WindowManager();
         }
         return instance;
     }
@@ -48,7 +48,6 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
         switch (playMode) {
             case "Play" -> {
                 this.add(mainContent, BorderLayout.CENTER);
-                this.add(footerMainWindow, BorderLayout.PAGE_END);
                 this.add(headerMainWindow, BorderLayout.PAGE_START);
                 this.remove(selectDeckPanel);
                 this.remove(addCardPanel);
@@ -56,7 +55,6 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
             }
             case "SelectDeck" -> {
                 this.add(selectDeckPanel, BorderLayout.CENTER);
-                this.remove(footerMainWindow);
                 this.remove(headerMainWindow);
                 this.remove(mainContent);
                 this.remove(menuPanel);
@@ -65,7 +63,6 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
             case "AddCard" -> {
                 this.add(addCardPanel, BorderLayout.CENTER);
                 this.remove(selectDeckPanel);
-                this.remove(footerMainWindow);
                 this.remove(headerMainWindow);
                 this.remove(mainContent);
                 this.remove(menuPanel);
@@ -73,7 +70,6 @@ public class MainWindow extends JPanel implements DeckSelectionListener {
             case "Menu" -> {
                 this.add(menuPanel, BorderLayout.CENTER);
                 this.remove(selectDeckPanel);
-                this.remove(footerMainWindow);
                 this.remove(headerMainWindow);
                 this.remove(mainContent);
                 this.remove(addCardPanel);

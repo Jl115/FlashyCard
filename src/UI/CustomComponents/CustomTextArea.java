@@ -1,7 +1,6 @@
-package UI.CardComponents;
+package UI.CustomComponents;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class CustomTextArea extends JTextArea {
     public CustomTextArea() {
