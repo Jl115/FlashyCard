@@ -16,7 +16,7 @@ public class Menu extends JFrame {
 
         //settings for JFrame window
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setMinimumSize(new Dimension(650, 520));
+        this.setMinimumSize(new Dimension(650, 580));
         this.setBounds(500, 350, 400, 600);
 
 

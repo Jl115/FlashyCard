@@ -21,26 +21,27 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
 
     // Name of the folder to be created or deleted
     protected String folderName;
-    public static String selectDeck;
+    private static String selectDeck;
 
     // Text field for the user to input the name of the deck
-    private JTextField folderTextField = new JTextField();
-    private JButton folderAddButton = new JButton();
-    private JButton deleteFolderButton = new JButton();
-    private JButton selectButton = new JButton();
+    private final JTextField folderTextField = new JTextField();
+    private final JButton folderAddButton = new JButton();
+    private final JButton deleteFolderButton = new JButton();
+    private final JButton selectButton = new JButton();
 
     // Accessing relative path of the folder for the decks
-    private File rootFile = new File("./flashyCard_DB");
-    private DefaultListModel<String> dataModel = new DefaultListModel<>();
-    private JList<String> dataList = new JList<>(this.dataModel);
+    private final File rootFile = new File("./flashyCard_DB");
+    private final DefaultListModel<String> dataModel = new DefaultListModel<>();
+    private final JList<String> dataList = new JList<>(this.dataModel);
 
-    private String cardTitle;
+    private static String cardTitle;
 
     /**
      * Private constructor for Singleton pattern.
      * Sets up the panel layout and functionality.
      */
-    private SelectDeckPanel() {
+    private SelectDeckPanel(String cardTitle) {
+        SelectDeckPanel.cardTitle = cardTitle;
         this.setLayout(new BorderLayout());
 
         // Check if the root directory exists, if not create it
@@ -107,7 +108,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
      */
     public static SelectDeckPanel getInstance() {
         if (instance == null) {
-            instance = new SelectDeckPanel();
+            instance = new SelectDeckPanel(cardTitle);
         }
         return instance;
     }
@@ -121,7 +122,7 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     }
 
     public void setSelectDeck(String selectDeck) {
-        this.selectDeck = selectDeck;
+        SelectDeckPanel.selectDeck = selectDeck;
     }
 
     /**
@@ -143,6 +144,13 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
     @Override
     public void addFolder() {
         this.folderName = this.folderTextField.getText();
+        this.folderName = folderName.replace(" ", "_");
+        this.folderName = folderName.replace("ä", "ae");
+        this.folderName = folderName.replace("ö", "oe");
+        this.folderName = folderName.replace("ü", "ue");
+        this.folderName = folderName.replace("Ä", "Ae");
+        this.folderName = folderName.replace("Ö", "Oe");
+        this.folderName = folderName.replace("Ü", "Ue");
         // Creating a new file with the name inside the text field
         File folder = new File(this.rootFile, folderName);
         if (folder.mkdir()) {
@@ -195,32 +203,39 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
         } else if (event.getSource() == selectButton) {
             // If the user clicks the select deck button, update the selected deck in various components
             selectDeck = dataList.getSelectedValue();
-            this.setSelectDeck(selectDeck);
-            AddCardPanel addCardPanel = AddCardPanel.getInstance();
-            addCardPanel.setFolderName(selectDeck);
-            CardContent cardContent = CardContent.getInstance();
-            cardContent.setDeckName(selectDeck); // Verwende selectDeck statt cardTitle
-            HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
-            headerMainWindow.setDeckName(selectDeck);
+            this.setSelectDeck(selectDeck); // Update the selected deck
+            AddCardPanel addCardPanel = AddCardPanel.getInstance(); // Get instance of AddCardPanel
+            addCardPanel.setFolderName(selectDeck); // Set folder name
+            CardContent cardContent = CardContent.getInstance(); // Get instance of CardContent
+            cardContent.setDeckName(selectDeck); // Use selectDeck instead of cardTitle to set the deck name
+            HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance(); // Get instance of HeaderMainWindow
+            headerMainWindow.setDeckName(selectDeck); // Set the deck name
 
+            // Get instance of SideMenuOptions and set mode and deck name
             SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
             sideMenuOptions.setSelectMode("Menu");
             sideMenuOptions.setDeckName(selectDeck);
-            for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {  // assuming you have a getter for listeners
+
+            // Notify all DeckSelectionListener objects about the selection
+            for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {
                 listener.deckSelected();
             }
         } else if (event.getSource() == deleteFolderButton) {
+            // If the user clicks the delete folder button, delete the selected folder
             String selectedName = dataList.getSelectedValue();
             if (selectedName != null) {
                 File file = new File(rootFile, selectedName);
+                // Try to delete the directory and update the data model if successful
                 if (deleteDirectory(file)) {
                     dataModel.removeElement(selectedName);
                 } else {
+                    // Show a dialog if the card deck could not be deleted
                     JOptionPane.showMessageDialog(this, "The Card deck could not be deleted.");
                 }
             }
         }
     }
 
-
 }
+
+

@@ -193,6 +193,8 @@ public class AddCardPanel extends JPanel implements ActionListener {
             cardTitle = cardTitle.replace("Ä", "Ae");
             cardTitle = cardTitle.replace("Ö", "Oe");
             cardTitle = cardTitle.replace("Ü", "Ue");
+
+
             // Get the front text of the card from the cardFrontTextArea
             // Variables holding user input for the flashcard front text, card title, and correct answer.
             String frontText = cardFrontTextArea.getText();
@@ -210,18 +212,21 @@ public class AddCardPanel extends JPanel implements ActionListener {
                 // If an IOException occurs, throw a new RuntimeException
                 throw new RuntimeException(ex);
             }
+
         }
     }
 
+
     /**
-     * This method is used to add a card to the deck.
-     * It creates necessary directories and files, and writes the card data to the files.
+     * This method is used to add a card to a deck, represented by the specific directory structure.
+     * It takes the front text of the card, the correct answer, and two wrong answers, and creates
+     * appropriate files and directories to store this information.
      *
-     * @param frontText    The text for the front of the card.
+     * @param frontText    The text for the front side of the card.
      * @param rightAnswer  The correct answer for the card.
      * @param wrongAnswerA The first incorrect answer for the card.
      * @param wrongAnswerB The second incorrect answer for the card.
-     * @throws IOException If an I/O error occurs.
+     * @throws IOException If an I/O error occurs during file operations.
      */
     private void addCardToDeck(String frontText, String rightAnswer, String wrongAnswerA, String wrongAnswerB) throws IOException {
         // Initialize the File objects for the directories and files.
@@ -238,21 +243,25 @@ public class AddCardPanel extends JPanel implements ActionListener {
             cardContent.setDeckName(cardTitle);
             if (folderFrontName.mkdirs()) {
                 try {
+                    // Writing the front text to the file.
                     if (frontTextFile.createNewFile()) {
                         FileWriter fileWriter = new FileWriter(frontTextFile.getAbsoluteFile());
                         fileWriter.write(frontText);
                         fileWriter.close();
                     }
+                    // Writing the correct answer to the file.
                     if (backRightTextFile.createNewFile()){
                         FileWriter fileWriter = new FileWriter(backRightTextFile.getAbsoluteFile());
                         fileWriter.write(rightAnswer);
                         fileWriter.close();
                     }
+                    // Writing the first wrong answer to the file.
                     if (backWrong1TextFile.createNewFile()) {
                         FileWriter fileWriter = new FileWriter(backWrong1TextFile.getAbsoluteFile());
                         fileWriter.write(wrongAnswerA);
                         fileWriter.close();
                     }
+                    // Writing the second wrong answer to the file.
                     if (backWrong2TextFile.createNewFile()) {
                         FileWriter fileWriter = new FileWriter(backWrong2TextFile.getAbsoluteFile());
                         fileWriter.write(wrongAnswerB);
@@ -263,9 +272,11 @@ public class AddCardPanel extends JPanel implements ActionListener {
                 }
             }
         } else {
+            // Displaying a message if the card deck could not be created or already exists.
             JOptionPane.showMessageDialog(this, "The Card Deck could not be created or a Card Deck with this Name already exists.");
         }
     }
+
 
     /**
      * This method is used to set the folder name for the deck.
