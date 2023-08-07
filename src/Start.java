@@ -2,11 +2,14 @@ import UI.Menu;
 
 public class Start {
 
-     Start() {
+    // Constructor initializes the Menu
+    Start() {
         Menu menu = Menu.getInstance();
-        menu.setVisible(true);
+        menu.setVisible(true); // Makes the menu visible
     }
+
+    // Main method, the entry point of the application
     public static void main(String[] args) {
-        new Start();
+        new Start(); // Creates an instance of Start, which launches the menu
     }
 }
