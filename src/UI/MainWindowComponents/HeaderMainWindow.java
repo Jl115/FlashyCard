@@ -10,14 +10,16 @@ public class HeaderMainWindow extends JPanel implements SetDeckName {
     private static HeaderMainWindow instance ;
     private String deckName;
     private JLabel deckNameLabel = new JLabel();
-    private Integer score = 70000000;
+    private Integer score = 0;
+    private JLabel scoreLabel;
+    private Boolean isTimeDecrease = false;
 
     private HeaderMainWindow() {
         this.setLayout(new BorderLayout());
         this.setSize(200, 200);
 
         deckNameLabel.setText("No Deck Selected");
-        JLabel scoreLabel = new JLabel("Score: " + score.toString());
+        this.scoreLabel = new JLabel("Score: " + score.toString());
 
         this.add(deckNameLabel, BorderLayout.LINE_START);
         this.add(scoreLabel, BorderLayout.LINE_END);
@@ -37,4 +39,59 @@ public class HeaderMainWindow extends JPanel implements SetDeckName {
         this.revalidate();
         this.repaint(); // Ask the system to repaint the component
     }
+
+    public void increaseScore(int amount) {
+        this.score += amount;
+        System.out.println(amount);
+        scoreLabel.setText("Score: " + score);
+        repaint();
+        revalidate();
+    }
+
+    public void decreaseScore(int amount) {
+        this.score -= amount;
+        System.out.println("Score: " + score);
+        scoreLabel.setText("Score: " + score);
+        repaint();
+        revalidate();
+    }
+
+    public void setTimeDecrease(Boolean timeDecrease) {
+        isTimeDecrease = timeDecrease;
+        if (isTimeDecrease) {
+            timeDecreaseScore();
+        }
+        repaint();
+        revalidate();
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    private void timeDecreaseScore() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isTimeDecrease) {
+                    score--;
+                    if (score <= 0) {
+                        score = 0;
+                    }
+                    System.out.println("decreased Score: " + score);
+                    scoreLabel.setText("Score: " + score);
+                    repaint();
+                    revalidate();
+                    try {
+                        Thread.sleep(1200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+
+
 }

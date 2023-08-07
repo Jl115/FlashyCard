@@ -24,8 +24,9 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
     private final CustomBorderTextArea rightTextArea = new CustomBorderTextArea();
     private final CustomBorderTextArea wrong1TextArea = new CustomBorderTextArea();
     private final CustomBorderTextArea wrong2TextArea = new CustomBorderTextArea();
+    private final HeaderMainWindow headerMainWindow = HeaderMainWindow.getInstance();
 
-    private final JButton rightButton = new JButton();
+    private final JButton correctButton = new JButton();
     private final JButton wrongButton = new JButton();
     private final JButton wrong2Button = new JButton();
     private final JButton shuffleButton = new JButton();
@@ -36,7 +37,11 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
     private Card[] cards;
     private int currentIndex = 0;
 
+
     private final JPanel cardPanel;
+    private boolean correctButtonListenerAdded = false;
+    private boolean wrongButtonListenerAdded = false;
+    private boolean wrong2ButtonListenerAdded = false;
 
     private static class AnswerGroup {
         CustomBorderTextArea textArea;
@@ -131,7 +136,7 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
 
     private void shuffleAnswers() {
         AnswerGroup[] answerGroups = {
-                new AnswerGroup(rightTextArea, rightButton),
+                new AnswerGroup(rightTextArea, correctButton),
                 new AnswerGroup(wrong1TextArea, wrongButton),
                 new AnswerGroup(wrong2TextArea, wrong2Button)
         };
@@ -169,6 +174,7 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
     }
 
 
+
     private void showCard() {
 
         if (cards != null && currentIndex < cards.length) {
@@ -193,9 +199,50 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
             frontCardLabel.setFont(frontCardLabel.getFont().deriveFont(Font.BOLD, 14));
             frontCardLabel.setHorizontalAlignment(JLabel.LEFT);
             frontCardPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
-            rightButton.setText("This one");
-            wrongButton.setText("No this one");
-            wrong2Button.setText("Oh wait this one");
+            correctButton.setText("I think this one");
+            //Need for Separating the button action-listener
+            if (!correctButtonListenerAdded) {
+                correctButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent d) {
+
+                        headerMainWindow.increaseScore(10);
+                        headerMainWindow.setTimeDecrease(false);
+                        currentIndex++;
+                        shuffleAnswers();
+                        showCard();
+                    }
+                });
+                correctButtonListenerAdded = true;
+            }
+
+
+            wrongButton.setText("I think this one");
+
+            if (!wrongButtonListenerAdded) {
+                wrongButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        headerMainWindow.decreaseScore(2);
+                        headerMainWindow.setTimeDecrease(true);
+                        shuffleAnswers();
+                    }
+                });
+                wrongButtonListenerAdded = true;
+            }
+
+            wrong2Button.setText("I think this one");
+            if (!wrong2ButtonListenerAdded) {
+                wrongButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        headerMainWindow.decreaseScore(2);
+                        headerMainWindow.setTimeDecrease(true);
+                        shuffleAnswers();
+                    }
+                });
+                wrong2ButtonListenerAdded = true;
+            }
 
 
             // Update the layout
