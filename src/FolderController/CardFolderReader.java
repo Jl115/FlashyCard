@@ -19,17 +19,17 @@ public class CardFolderReader {
             File[] cardFolders = currentFolder.listFiles(File::isDirectory);
             if (cardFolders != null) {
                 for (File cardFolder : cardFolders) {
-                    System.out.println("Reading card folder: " + cardFolder.getPath());
+                    //System.out.println("Reading card folder: " + cardFolder.getPath());
                     // Variables to hold the content of card's components
                     String front = null, right = null, wrong1 = null, wrong2 = null;
                     File frontFolder = new File(cardFolder, "front");
                     if (frontFolder.isDirectory()) {
                         File[] files = frontFolder.listFiles();
                         if (files != null) {
-                            System.out.println("Reading files from folder: " + frontFolder.getPath());
+                            //System.out.println("Reading files from folder: " + frontFolder.getPath());
                             for (File file : files) {
                                 String content = readFileToString(file.getPath());
-                                System.out.println("Reading file: " + file.getName() + ", content: " + content);
+                                //System.out.println("Reading file: " + file.getName() + ", content: " + content);
                                 switch (file.getName()) {
                                     case "front.txt" -> front = content;
                                     case "right.txt" -> right = content;

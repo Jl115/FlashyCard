@@ -1,5 +1,6 @@
 package UI.MenuComponents;
 
+import FolderController.LeaderboardUpdater;
 import UI.CustomComponents.CustomTextArea;
 
 import javax.swing.*;
@@ -17,8 +18,7 @@ public class MenuPanel extends JPanel {
     private final String tutorialText = """
             Hi, welcome to my Flashcard Application. I developed this over the course of 3 weeks. If you notice any bugs, please contact me, and I will do my best to fix them. The same goes for new feature requests. :)
 
-            The E-mail for reaching out to me is: joelbern006+projectF@gmail.com
-
+            The E-mail for reaching out to me is: joelbern006+projectFcard@gmail.com
 
 
             How it works:
@@ -27,9 +27,13 @@ public class MenuPanel extends JPanel {
 
             Next, you'll need to add cards. You can give them a name and provide 3 answers, 1 of which is the correct one, while the other 2 are false. Please be sure to put the correct answer in the right field, otherwise, you'll always lose.Save the cards once you're done.
 
-            After that, you can start a new game by clicking on 'Play!' Then, choose the correct answer. You'll earn 10 points if the answer is correct. If the answer is false, you'll lose 2 points, and over time, you'll lose more.
+            After that, you need to Select the Deck again then you can start a new game by clicking on 'Play!' Then, choose the correct answer. You'll earn 10 points if the answer is correct. If the answer is false, you'll lose 2 points, and over time, you'll lose more.
 
             You can stop the timer if you get the right answer! Good luck, smart soldier!☃︎""";
+
+    private String scoreText = """
+            """;
+    private CustomTextArea leaderBoardPanel = new CustomTextArea();
 
     private MenuPanel() {
         this.setLayout(new GridBagLayout());
@@ -42,16 +46,17 @@ public class MenuPanel extends JPanel {
         scoreLabelPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0, Color.LIGHT_GRAY));
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
         scorePanel.setBorder(BorderFactory.createMatteBorder(0,1,0,0, Color.LIGHT_GRAY));
-        JLabel scoreLabel = new JLabel("     Highscore     ");
+        JLabel scoreLabel = new JLabel("♕    Leader Board    ♕");
         scoreLabel.setHorizontalAlignment(JLabel.CENTER);
         scoreLabel.setFont(getFont().deriveFont(Font.ITALIC, 20));
         scoreLabelPanel.add(scoreLabel);
         scorePanel.add(Box.createVerticalStrut(10)); // Space between elements
         scorePanel.add(scoreLabelPanel);
 
-        JLabel testLabel = new JLabel("Test");
-        testLabel.setHorizontalAlignment(JLabel.CENTER);
-        scorePanel.add(testLabel);
+
+        leaderBoardPanel.setMaximumSize(new Dimension(200,Integer.MAX_VALUE));
+        leaderBoardPanel.setText(scoreText);
+        scorePanel.add(leaderBoardPanel);
 
         constraints.gridx = 1;
         constraints.gridy = 0;
@@ -76,9 +81,8 @@ public class MenuPanel extends JPanel {
 
         CustomTextArea descriptionTArea = new CustomTextArea();
         descriptionTArea.setText(tutorialText);
-        contentPanel.add(Box.createVerticalStrut(20)); // Space between elements
+        contentPanel.add(Box.createVerticalStrut(10)); // Space between elements
         contentPanel.add(descriptionTArea);
-        contentPanel.add(Box.createVerticalStrut(40)); // Space between elements
 
         constraints.gridx = 0;
         constraints.weightx = 3;
@@ -95,5 +99,16 @@ public class MenuPanel extends JPanel {
             instance = new MenuPanel();
         }
         return instance;
+    }
+    //TODO implementing the Method for getting the Score than Saving them in in an Array the with in the last card  method saving the Array as .txt file in FlashyCard_DB name: binBashConfigS.txt then getting the Array at the start
+
+    public void setScoreText() {
+        LeaderboardUpdater updater = new LeaderboardUpdater();
+        String data = updater.readLeaderboard();
+        System.out.println(scoreText);
+        this.scoreText = data;
+        leaderBoardPanel.setText(scoreText);
+        leaderBoardPanel.repaint();
+        leaderBoardPanel.revalidate();
     }
 }

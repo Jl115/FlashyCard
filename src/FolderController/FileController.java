@@ -1,6 +1,8 @@
 package FolderController;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * FileController class manages the file structure related to the decks.
@@ -46,6 +48,11 @@ public class FileController implements SetDeckName {
     public static FileController getInstance(String deckName) {
         instance = new FileController(deckName);
         return instance;
+    }
+
+    public void addFile(String score)  {
+
+
     }
 
 }

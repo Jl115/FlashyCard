@@ -98,7 +98,28 @@ public class SelectDeckPanel extends JPanel implements ActionListener, FolderCon
 
         // Display message if no decks exist
         if (dataModel.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "U need to create a Card deck.");
+            int selectedOption = JOptionPane.showOptionDialog(this,
+                    "You need to Create a Deck First.",
+                    "Welcome Soldier ☃︎",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE, null,
+                    new String[]{"Create Deck"}, "B");
+
+            if (selectedOption == JOptionPane.CLOSED_OPTION) {
+                SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
+                sideMenuOptions.setSelectMode("Menu");
+                // Notify all DeckSelectionListener objects about the selection
+                for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {
+                    listener.deckSelected();
+                }
+            } else if (selectedOption == 0) {
+                SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
+                sideMenuOptions.setSelectMode("SelectDeck");
+                // Notify all DeckSelectionListener objects about the selection
+                for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {
+                    listener.deckSelected();
+                }
+            }
         }
     }
 

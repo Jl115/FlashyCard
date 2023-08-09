@@ -1,9 +1,14 @@
 package UI.MainWindowComponents;
 
 import FolderController.Card;
+import FolderController.FileController;
+import FolderController.LeaderboardUpdater;
 import FolderController.SetDeckName;
 import UI.CustomComponents.CustomBorderTextArea;
 import UI.CustomComponents.CustomTextArea;
+import UI.MenuComponents.DeckSelectionListener;
+import UI.MenuComponents.MenuPanel;
+import UI.MenuComponents.SideMenuOptions;
 import UI.Panels.SelectDeckPanel;
 
 import javax.swing.*;
@@ -11,7 +16,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static FolderController.CardFolderReader.addFolderStructure;
 
@@ -285,34 +295,73 @@ public class CardContent extends JPanel implements SetDeckName, ActionListener {
             showCard();
         } else if (e.getSource() == nextButton) {
             currentIndex++;
-            if (currentIndex >= cards.length) {
+            if (currentIndex == cards.length) {
+
+                int selectedOption = JOptionPane.showOptionDialog(this,
+                        "You Reached the End of your Deck Congrats Soldier! ☃︎",
+                        "Congratulation",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE, null,
+                        new String[]{"Play again", "Go To Menu"}, "B");
+
+                if (selectedOption == JOptionPane.CLOSED_OPTION) {
+                    shuffle();
+                    goMenu();
+                } else if (selectedOption == 0) {
+                    shuffle();
+                } else {
+                    shuffle();
+                    goMenu();
+                }
+            }else if (currentIndex >= cards.length) {
                 currentIndex = cards.length - 1;
                 shuffleAnswers();
             }
             showCard();
         } else if (e.getSource() == shuffleButton) {
-            // Implement the Fisher-Yates shuffle Algorithm to shuffle the cards.
-            int numberOfCards = cards.length;
-            Random rnd = new Random();
-            int[] cardNumber = new int[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++) {
-                cardNumber[i] = i;
-            }
-            for (int i = cardNumber.length - 1; i > 0; i--) {
-                int index = rnd.nextInt(i + 1);
-                int a = cardNumber[index];
-                cardNumber[index] = cardNumber[i];
-                cardNumber[i] = a;
-            }
-
-            Card[] shuffledCard = new Card[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++) {
-                shuffledCard[i] = cards[cardNumber[i]];
-            }
-            cards = shuffledCard;
-            showCard();
-            currentIndex = 0;
+            shuffle();
         }
+    }
+
+    private void goMenu() {
+
+
+        Integer score = headerMainWindow.getScore();
+        LeaderboardUpdater updater = new LeaderboardUpdater();
+        updater.updateLeaderboard(score);
+
+        MenuPanel menuPanel = MenuPanel.getInstance();
+        menuPanel.setScoreText();
+
+        SideMenuOptions sideMenuOptions = SideMenuOptions.getInstance();
+        sideMenuOptions.setSelectMode("Menu");
+        // Notify all DeckSelectionListener objects about the selection
+        for (DeckSelectionListener listener : sideMenuOptions.getListeners()) {
+            listener.deckSelected();
+        }
+    }
+    private void shuffle() {
+        // Implement the Fisher-Yates shuffle Algorithm to shuffle the cards.
+        int numberOfCards = cards.length;
+        Random rnd = new Random();
+        int[] cardNumber = new int[numberOfCards];
+        for (int i = 0; i < numberOfCards; i++) {
+            cardNumber[i] = i;
+        }
+        for (int i = cardNumber.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            int a = cardNumber[index];
+            cardNumber[index] = cardNumber[i];
+            cardNumber[i] = a;
+        }
+
+        Card[] shuffledCard = new Card[numberOfCards];
+        for (int i = 0; i < numberOfCards; i++) {
+            shuffledCard[i] = cards[cardNumber[i]];
+        }
+        cards = shuffledCard;
+        showCard();
+        currentIndex = 0;
     }
 }
 
