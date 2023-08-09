@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FlashyCard_School:jar3">
+    <output-path>$PROJECT_DIR$/out/artifacts/FlashyCard_School_jar3</output-path>
+    <root id="archive" name="FlashyCard_School.jar">
+      <element id="module-output" name="FlashyCard_School" />
+    </root>
+  </artifact>
+</component>

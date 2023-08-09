@@ -54,7 +54,7 @@ public class AddCardPanel extends JPanel implements ActionListener {
         // Instance of SelectDeckPanel.
         SelectDeckPanel selectDeckPanel = SelectDeckPanel.getInstance();
         folderName = selectDeckPanel.getFolderName();
-        rootFolder = new File("./flashyCard_DB/" + folderName);
+        rootFolder = new File("./flashyCardData/flashyCard_DB/" + folderName);
 
         // Set layout manager.
         this.setLayout(new BorderLayout());
